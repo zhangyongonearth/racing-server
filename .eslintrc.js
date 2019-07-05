@@ -1,11 +1,16 @@
 module.exports = {
+  'parser': 'babel-eslint',
+  'parserOptions': {
+    'sourceType': 'module'
+  },
   'env': {
     'browser': true,
     'commonjs': true,
     'es6': true,
+    'node': true
   },
   'extends': [
-   
+
   ],
   'globals': {
     'Atomics': 'readonly',
@@ -180,7 +185,7 @@ module.exports = {
     'yoda': [2, 'never'],
     'prefer-const': 2,
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    'no-path-concat':0,
+    'no-path-concat': 0,
     'object-curly-spacing': [2, 'always', {
       objectsInObjects: false
     }],
