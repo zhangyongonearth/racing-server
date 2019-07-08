@@ -15,7 +15,6 @@ function getUrlParam(urlQuery) {
  */
 function readQuestionLib() {
   const marked = require('marked')
-
   // const showdown = require('showdown')
   const fs = require('fs')
   const questionLibString = fs.readFileSync('./server/questionLib.md').toString()
@@ -41,7 +40,7 @@ function getRandom(m, n) {
   if (ret.length === 1) {
     return ret[0]
   } else {
-    return ret
+    return ret.sort(function(a, b) { return a > b })
   }
 }
 

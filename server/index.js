@@ -3,7 +3,7 @@ const WebSocket = require('ws')
 const http = require('http')
 const path = require('path')
 const app = express()
-const { config, state } = require('./config')
+const { config, state } = require('./data')
 const { questionLib, getRandom, getUrlParam } = require('./utils')
 app.use('/', express.static(config.pagePath))
 
@@ -26,14 +26,30 @@ const wss = new WebSocket.Server({
   verifyClient
 })
 // 封装广播接口
-
+wss.broadcast = function(data) {
+  console.log(this === wss)
+  wss.clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(data)
+    }
+  })
+}
 // 封装停止答题
 
 // 封装抢答
-wss.on('connection', function connection(ws, req) {
+wss.on('connection', function(ws, req) {
   // this === wss?
-  ws.on('message', function incoming(message) {
+  ws.on('message', function(message) {
     console.log('@message')
+    //
+    // Broadcast to everyone else.
+    wss.clients.forEach(function each(client) {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(data)
+      }
+    })
+    // Broadcast to everyone else end
+
     // urlParam.type: join, answer, quit
     wss.clients.forEach(function(client) {
       if (client.readyState === WebSocket.OPEN) {
@@ -53,6 +69,6 @@ wss.on('error', function(ws, err) {
   console.log(err)
 })
 
-server.listen(config.serverPort, function listening() {
+server.listen(config.serverPort, function() {
   console.log('Listening on %d', server.address().port)
 })

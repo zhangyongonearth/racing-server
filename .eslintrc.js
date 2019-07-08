@@ -1,8 +1,8 @@
 module.exports = {
-  'parser': 'babel-eslint',
-  'parserOptions': {
-    'sourceType': 'module'
-  },
+  // 'parser': 'babel-eslint',
+  // 'parserOptions': {
+  //   'sourceType': 'module'
+  // },
   'env': {
     'browser': true,
     'commonjs': true,
