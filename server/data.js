@@ -23,6 +23,7 @@ const state = {
   activeTeam: '', // 收到抢答消息的时候更新
   teams: {}// {token:'', name:'', status:'', score:''}
 }
+// 选手输入密令和队伍名，分别发送登陆和改名请求，名称在进入页面之后还可以再次修改
 function login(token, type) {
   if (type === 'zhuchi' && token === config.zhuchiToken) {
     return true
@@ -42,6 +43,10 @@ function login(token, type) {
       return true // 直接允许连接
     }
   }
+}
+// 修改名称
+function rename(token, name) {
+
 }
 function answer(teamToken, answer) {
 

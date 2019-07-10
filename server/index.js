@@ -8,7 +8,8 @@ const { questionLib, getRandom, getUrlParam } = require('./utils')
 app.use('/', express.static(config.pagePath))
 
 const server = http.createServer(app)// a pre-created http/s server
-function verifyClient(info, req) {
+function verifyClient(info) {
+  console.log('verifyClient')
   const param = getUrlParam(info.req.url)
   if (param.zhuchiToken && param.zhuchiToken === config.zhuchiToken) {
     return true
@@ -38,6 +39,7 @@ wss.broadcast = function(data) {
 
 // 封装抢答
 wss.on('connection', function(ws, req) {
+  console.log('@connection')
   // this === wss?
   ws.on('message', function(message) {
     console.log('@message')
@@ -45,7 +47,7 @@ wss.on('connection', function(ws, req) {
     // Broadcast to everyone else.
     wss.clients.forEach(function each(client) {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(data)
+        client.send(JSON.stringify(config))
       }
     })
     // Broadcast to everyone else end
@@ -53,7 +55,7 @@ wss.on('connection', function(ws, req) {
     // urlParam.type: join, answer, quit
     wss.clients.forEach(function(client) {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(state)
+        client.send(JSON.stringify(state))
       }
     })
   })
@@ -61,7 +63,7 @@ wss.on('connection', function(ws, req) {
     console.log('@close')
     console.log(ws)
   })
-  ws.send('Hello Client')
+  ws.send('connected')
 })
 wss.on('error', function(ws, err) {
   console.log('@error')
