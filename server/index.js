@@ -4,7 +4,7 @@ const http = require('http')
 const path = require('path')
 const app = express()
 const { config, state } = require('./data')
-const { questionLib, getRandom, getUrlParam } = require('./utils')
+const { questionLib, getUrlParam } = require('./utils')
 app.use('/', express.static(config.pagePath))
 
 const server = http.createServer(app)// a pre-created http/s server

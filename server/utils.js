@@ -11,19 +11,21 @@ function getUrlParam(urlQuery) {
 /**
  * 读题
  * 从md文件中读取题目，存入数组，每次获取的时候pop一个
- * [{q:'',a:'',s:2}]
+ * [{q:'',a:''}]
  */
 function readQuestionLib() {
-  const marked = require('marked')
-  // const showdown = require('showdown')
+  const ret = []
   const fs = require('fs')
-  const questionLibString = fs.readFileSync('./server/questionLib.md').toString()
-  // const questionLibHtml = (new showdown.Converter()).makeHtml(questionLibString)
-  const questionLibHtml = marked.parse(questionLibString, { headerIds: false })
-  const questionLibArray = questionLibHtml.split('<h1>1</h1>')
-
-  return questionLibArray
+  const questionLibString = fs.readFileSync('./server/questionLib.txt', 'utf-8')// .toString()
+  questionLibString.split(/[\r\n]+[\r\n]+[\r\n]+/).map((oneQuestion) => {
+    if (oneQuestion.trim() !== '') {
+      ret.push({ q: oneQuestion.substr(0, oneQuestion.length - 3).replace(/[\r\n]/g, '<br/>'), a: oneQuestion.substr(oneQuestion.length - 1) })
+    }
+  })
+  console.log(ret)
+  return ret
 }
+
 const questionLib = readQuestionLib()
 /**
  * 生成N个M位不同的随机数
