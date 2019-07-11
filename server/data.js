@@ -23,6 +23,10 @@ const state = {
   activeTeam: '', // 收到抢答消息的时候更新
   teams: {}// {token:{name:'', status:'', score:''}
 }
+// 如果能在在wss.clients中每个client添加属性标记是xuanshou or zhuchi or screen 可以不记录该属性
+// onconnnect的时候ws可以添加用户属性
+// let connectedClients = { screen: [], xuanshou: [], zhuchi: [] }
+
 // 选手输入密令和队伍名，分别发送登陆和改名请求，名称在进入页面之后还可以再次修改
 function login(token, type) {
   if (type === 'zhuchi' && token === config.zhuchiToken) {
@@ -58,6 +62,8 @@ function initRace(raceName, teamCount, raceMode) {
   config.raceMode = raceMode
   config.teamCount = teamCount
   config.teamTokens = require('./utils').getRandom(4, teamCount)
+  // 断开所有clients
+  // connectedClients = { screen: [], xuanshou: [], zhuchi: [] }
 }
 // 修改名称
 function rename(token, name) {

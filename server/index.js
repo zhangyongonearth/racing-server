@@ -39,7 +39,10 @@ wss.broadcast = function(data) {
 
 // 封装抢答
 wss.on('connection', function(ws, req) {
+  // 能否在此时，为ws添加clientType属性？此时的哪个参数中有token？
   console.log('@connection')
+  // req中有路径信息，可以得到类型
+  // ws.clientType = 'zhuchi'
   // this === wss?
   ws.on('message', function(message) {
     console.log('@message')
