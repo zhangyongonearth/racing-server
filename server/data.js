@@ -4,7 +4,7 @@
 const config = {
   serverPort: '80',
   pagePath: require('path').resolve(__dirname, '../static/'),
-  zhuchiToken: '011605',
+  judgeToken: '011605',
   // 以上三个变量，运行之前配置
   // 以下变量，在主持人界面登陆之后设置
   raceName: '践行社会主核心价值观你追我赶之知识竞赛',
@@ -23,14 +23,14 @@ const state = {
   activeTeam: '', // 收到抢答消息的时候更新
   teams: {}// {token:{name:'', status:'', score:''}
 }
-// 如果能在在wss.clients中每个client添加属性标记是xuanshou or zhuchi or screen 可以不记录该属性
+// 如果能在在wss.clients中每个client添加属性标记是xuanshou or judge or screen 可以不记录该属性
 // onconnnect的时候ws可以添加用户属性
-// let connectedClients = { screen: [], xuanshou: [], zhuchi: [] }
+// let connectedClients = { screen: [], xuanshou: [], judge: [] }
 
 // 选手输入密令和队伍名，分别发送登陆和改名请求，名称在进入页面之后还可以再次修改
 function login(token, type) {
-  if (type === 'zhuchi' && token === config.zhuchiToken) {
-    console.log('zhuchi login')
+  if (type === 'judge' && token === config.judgeToken) {
+    console.log('judge login')
     return true
   }
   if (type === 'team') {
@@ -63,7 +63,6 @@ function initRace(raceName, teamCount, raceMode) {
   config.teamCount = teamCount
   config.teamTokens = require('./utils').getRandom(4, teamCount)
   // 断开所有clients
-  // connectedClients = { screen: [], xuanshou: [], zhuchi: [] }
 }
 // 修改名称
 function rename(token, name) {
@@ -88,8 +87,8 @@ function logout(token, type) {
       return true // 直接允许连接
     }
   }
-  if (type === 'zhuchi' && token === config.zhuchiToken) {
-    console.warn('zhuchi logout')
+  if (type === 'judge' && token === config.judgeToken) {
+    console.warn('judge logout')
     return true
   }
   return false

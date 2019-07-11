@@ -11,7 +11,7 @@ const server = http.createServer(app)// a pre-created http/s server
 function verifyClient(info) {
   console.log('verifyClient')
   const param = getUrlParam(info.req.url)
-  if (param.zhuchiToken && param.zhuchiToken === config.zhuchiToken) {
+  if (param.judgeToken && param.judgeToken === config.judgeToken) {
     return true
   }
   if (param.teamToken && config.teamTokens.indexOf(param.teamToken) !== -1) {
@@ -27,10 +27,9 @@ const wss = new WebSocket.Server({
   verifyClient
 })
 // 封装广播接口
-wss.broadcast = function(data) {
-  console.log(this === wss)
-  wss.clients.forEach(function each(client) {
-    if (client.readyState === WebSocket.OPEN) {
+wss.broadcast = function(data, clientType) {
+  this.clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN && client.clientType === clientType) {
       client.send(data)
     }
   })
@@ -41,11 +40,23 @@ wss.broadcast = function(data) {
 wss.on('connection', function(ws, req) {
   // 能否在此时，为ws添加clientType属性？此时的哪个参数中有token？
   console.log('@connection')
-  // req中有路径信息，可以得到类型
-  // ws.clientType = 'zhuchi'
-  // this === wss?
+  const param = getUrlParam(req.url)
+  ws.clientType = 'screen'
+  param.judgeToken && (ws.clientType = 'judge')
+  param.teamToken && (ws.clientType = 'team')
+
   ws.on('message', function(message) {
     console.log('@message')
+    console.log(message)
+    try { message = JSON.parse(message) } catch (e) {
+      console.error(e)
+    }
+    const { action, data } = message
+    switch (action) {
+      case 'initRace':
+        console.log('initRace', data)
+        break
+    }
     //
     // Broadcast to everyone else.
     wss.clients.forEach(function each(client) {

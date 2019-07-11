@@ -11,8 +11,8 @@
         see the functions in console
   </body>
   <script>
-    function initClient(token, type, onmessage){
-      var ws = new WebSocket('ws://localhost?'+type+'='+token)
+    function createClient(token, type, onmessage){
+      var ws = new WebSocket('ws://localhost?'+type+'Token='+token)
       ws.onopen = function() {
         console.log('@open')
       }
@@ -41,7 +41,7 @@
           this.ws.close()
         }
         this.token = token
-        this.ws = initClient(token, this.type, this.onmessage)
+        this.ws = createClient(token, this.type, this.onmessage)
         return this
       }
       this.quit = function(){
@@ -58,41 +58,38 @@
         }
       }
     }
-    function Zhuchi(){
-      Client.call(this, 'zhuchiToken')
+    function Judge(){
+      Client.call(this, 'judge')
+      
+      this.initRace = function(raceName, teamCount, raceMode){
+        this.send({action:'initRace', data:{raceName, teamCount, raceMode}})
+      }
+      this.nextQuestion = function(){
+        this.send({action:'nextQuestion'})
+      }
       this.showAnswer = function(a){
         this.send({action:'showAnswer', data:a})
       }
+      this.endRace = function(){
+        this.send({action:'endRace'})
+      }
+      this.changeScore = function(teamToken, teamScore){
+        this.send({action:'changeScore', data:{teamToken, teamScore}})
+      }
       this.onmessage = function(data){
-        console.log('this is zhuchi onmessage')
+        console.log('this is judge onmessage')
       }
     }
-    function Xuanshou(){
-      this.token = undefined
-      this.ws = undefined
-      this.login = function(token){
-        if(this.ws && this.ws.readyState === this.ws.OPEN){
-          if(this.token === token){
-            return this
-          }
-          this.ws.close()
-        }
-        this.token = token
-        this.ws = initClient(token, 'xuanshouToken', this.onmessage)
-        return this
-      }
-      this.quit = function(){
-        this.ws.close()
-      }
+    function Team(){
+      Client.call(this, 'team')
       this.answer = function(a){
-        try{
-          this.ws.send(JSON.stringify({action:'answer', data:a}))
-        }catch(e){
-          this.login(this.token)
-        }
+        this.send({action:'answer', data:a})
+      }
+      this.rename = function(newName){
+        this.send({action:'rename', data:newName})
       }
       this.onmessage = function(data){
-        console.log(data)
+        console.log('this is team onmessage')
       }
     }
   </script>
