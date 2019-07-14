@@ -16,8 +16,7 @@ function getUrlParam(urlQuery) {
 function readQuestionLib(filePath) {
   const ret = []
   const fs = require('fs')
-  const path = require('path')
-  const questionLibString = fs.readFileSync(path.resolve(__dirname, filePath), 'utf-8')// .toString()
+  const questionLibString = fs.readFileSync(filePath, 'utf-8')// .toString()
   questionLibString.split(/[\r\n]+[\r\n]+[\r\n]+/).map((oneQuestion) => {
     if (oneQuestion.trim() !== '') {
       ret.push({ q: oneQuestion.substr(0, oneQuestion.length - 3).replace(/[\r\n]/g, '<br/>'), a: oneQuestion.substr(oneQuestion.length - 1) })
@@ -26,7 +25,7 @@ function readQuestionLib(filePath) {
   console.log(ret)
   return ret
 }
-const questionLib = readQuestionLib('./questionLib.txt')
+
 /**
  * 生成N个M位不同的随机数
  */
@@ -46,4 +45,4 @@ function getRandom(m, n) {
   }
 }
 
-module.exports = { questionLib, getRandom, getUrlParam }
+module.exports = { readQuestionLib, getRandom, getUrlParam }

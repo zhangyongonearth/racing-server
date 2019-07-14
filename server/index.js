@@ -1,24 +1,17 @@
 const express = require('express')
 const WebSocket = require('ws')
 const http = require('http')
-const path = require('path')
 const app = express()
-const { config, state } = require('./data')
-const { questionLib, getUrlParam } = require('./utils')
+const { login, logout, initRace, beginRace, endRace, changeScore, nextQuestion,
+  rename, answer, config, state } = require('./data')
+const { getUrlParam } = require('./utils')
 app.use('/', express.static(config.pagePath))
 
 const server = http.createServer(app)// a pre-created http/s server
 function verifyClient(info) {
   console.log('verifyClient')
-  const param = getUrlParam(info.req.url)
-  if (param.judgeToken && param.judgeToken === config.judgeToken) {
-    return true
-  }
-  if (param.teamToken && config.teamTokens.indexOf(param.teamToken) !== -1) {
-    return true
-    // 暂时不限时每队的connect个数
-  }
-  return false
+  return login(info.req.url)
+
   // var ws2 = new WebSocket('ws://localhost?key=123aaa')
   // info.req.url = /?key=123aaa
 }

@@ -64,6 +64,9 @@
       this.initRace = function(raceName, teamCount, raceMode){
         this.send({action:'initRace', data:{raceName, teamCount, raceMode}})
       }
+      this.beginRace = function(){
+        this.send({action:'beginRace'})
+      }
       this.nextQuestion = function(){
         this.send({action:'nextQuestion'})
       }
@@ -82,8 +85,8 @@
     }
     function Team(){
       Client.call(this, 'team')
-      this.answer = function(a){
-        this.send({action:'answer', data:a})
+      this.answer = function(answer, questionIndex){
+        this.send({action:'answer', data:{answer, questionIndex}})
       }
       this.rename = function(newName){
         this.send({action:'rename', data:newName})
