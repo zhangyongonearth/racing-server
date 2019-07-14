@@ -13,10 +13,11 @@ function getUrlParam(urlQuery) {
  * 从md文件中读取题目，存入数组，每次获取的时候pop一个
  * [{q:'',a:''}]
  */
-function readQuestionLib() {
+function readQuestionLib(filePath) {
   const ret = []
   const fs = require('fs')
-  const questionLibString = fs.readFileSync('./server/questionLib.txt', 'utf-8')// .toString()
+  const path = require('path')
+  const questionLibString = fs.readFileSync(path.resolve(__dirname, filePath), 'utf-8')// .toString()
   questionLibString.split(/[\r\n]+[\r\n]+[\r\n]+/).map((oneQuestion) => {
     if (oneQuestion.trim() !== '') {
       ret.push({ q: oneQuestion.substr(0, oneQuestion.length - 3).replace(/[\r\n]/g, '<br/>'), a: oneQuestion.substr(oneQuestion.length - 1) })
@@ -25,8 +26,7 @@ function readQuestionLib() {
   console.log(ret)
   return ret
 }
-
-const questionLib = readQuestionLib()
+const questionLib = readQuestionLib('./questionLib.txt')
 /**
  * 生成N个M位不同的随机数
  */
