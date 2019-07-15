@@ -24,8 +24,8 @@ const state = {
   answer: '',
   score: 2,
   updateTime: undefined,
-  answers: [], // 每道题的回答情况，每次请求题目后push{}
   activeTeam: '', // 收到抢答消息的时候更新
+  answers: [], // 每道题的回答情况，每次请求题目后push{}
   teams: {}// {token:{name:'', status:'', score:''}
 }
 // 如果能在在wss.clients中每个client添加属性标记是xuanshou or judge or screen 可以不记录该属性
@@ -72,11 +72,11 @@ function login(param) {
 // 初始化竞赛
 function initRace(raceName, teamCount, raceMode) {
   config.raceName = raceName
-  config.raceMode = raceMode
   config.teamCount = teamCount
+  config.raceMode = raceMode
   config.teamTokens = require('./utils').getRandom(4, teamCount)
   config.questionLib = readQuestionLib(config.questionLibPath)
-  state.enableAnswer = 0// 未开始
+  state.enableAnswer = false// 未开始
   // 断开所有clients
   return { enableAnswer: false }
 }
@@ -108,11 +108,10 @@ function showAnswer(questionIndex) {
 function changeScore(teamToken, newValue) {
   if (teamToken in state.teams) {
     state.teams[teamToken]['score'] = newValue
-    return true
   } else {
     console.error('changeScore team not exist')
-    return false
   }
+  return { teams: state.teams }
 }
 // 结束竞赛
 function endRace() {
@@ -124,10 +123,10 @@ function endRace() {
 function rename(token, name) {
   if (token in state.teams) {
     state.teams[token]['name'] = name
-    return { teamToken: token, name: name }
   } else {
     console.error('rename team not exist')
   }
+  return { teams: state.teams }
 }
 function logout(token, type) {
   if (type === 'team') {
@@ -169,7 +168,7 @@ function answer(teamToken, answer, questionIndex) {
   } else {
     console.warn('repeat answer')
   }
-  return { activeTeam: state.activeTeam, enableAnswer: state.enableAnswer }
+  return { teamToken, activeTeam: state.activeTeam, enableAnswer: state.enableAnswer }
 }
 
 module.exports = { login, logout, initRace, beginRace, endRace, changeScore, nextQuestion, showAnswer,

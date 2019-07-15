@@ -20,7 +20,8 @@ const wss = new WebSocket.Server({
   verifyClient
 })
 // 封装广播接口，exclusiveClient不需要，客户端发送完消息之后需要从后台知道是否抢到了
-wss.broadcast = function(data, clientType) {
+wss.broadcast = function(data, action, clientType) {
+  data = { action, data }
   this.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN && (!clientType || client.clientType === clientType)) {
       client.send(JSON.stringify(data))
@@ -50,49 +51,48 @@ wss.on('connection', function(ws, req) {
       case 'initRace':
         console.log('initRace', data)
         resp = initRace(data.raceName, data.teamCount, data.raceMode)
-        wss.broadcast({ teamTokens: config.teamTokens }, 'judge')
+        wss.broadcast({ teamTokens: config.teamTokens }, action, 'judge')
         wss.broadcast({
           raceName: data.raceName,
           teamCount: data.teamCount,
           beginTime: config.beginTime,
           raceMode: config.raceMode,
-          status: state.status
-        }, 'screen')
-        wss.broadcast(resp, 'team')
+          enableAnswer: false
+        }, action, 'screen')
+        wss.broadcast(resp, action, 'team')
         break
       case 'beginRace':
         console.log('beginRace')
         resp = beginRace()
-        wss.broadcast(resp)
+        wss.broadcast(resp, action)
         break
       case 'nextQuestion':
         console.log('nextQuestion')
         resp = nextQuestion()
-        wss.broadcast(resp)
+        wss.broadcast(resp, action)
         break
       case 'showAnswer':
         resp = showAnswer(data.questionIndex)
-        wss.broadcast(resp, 'screen')
-        wss.broadcast(resp, 'team')
+        wss.broadcast(resp, action, 'screen')
+        wss.broadcast(resp, action, 'team')
         break
       case 'changeScore':
         resp = changeScore(data.teamToken, data.newValue)
+        wss.broadcast(resp, action, 'screen')
+        wss.broadcast(resp, action, 'team')
         break
       case 'endRace':
         resp = endRace()
-        wss.broadcast(req)
-        break
-      case 'login':
-
+        wss.broadcast(resp, action)
         break
       case 'rename':
         resp = rename(data.teamToken, data.newName)
-        wss.broadcast(resp, 'screen')
+        wss.broadcast(resp, action, 'screen')
         break
       case 'answer':
         resp = answer(data.teamToken, data.answer, data.questionIndex)
-        wss.broadcast(resp, 'screen')
-        wss.broadcast(resp, 'team')
+        wss.broadcast(resp, action, 'screen')
+        wss.broadcast(resp, action, 'team')
         break
       case 'logout':
 
@@ -105,7 +105,17 @@ wss.on('connection', function(ws, req) {
     console.log('@close')
     console.log(ws)
   })
-  ws.send('connected')
+  // 以防该客户端是在比赛开始的时候连接进来的
+  ws.send(JSON.stringify({
+    action: 'connect',
+    data: {
+      enableAnswer: state.enableAnswer,
+      questionIndex: state.questionIndex,
+      updateTime: state.updateTime,
+      activeTeam: state.activeTeam,
+      teams: state.teams // 以防该主持人在比赛过程中刷新
+    }
+  }))
 })
 wss.on('error', function(ws, err) {
   console.log('@error')
