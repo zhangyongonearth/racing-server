@@ -33,7 +33,7 @@ function getRandom(m, n) {
   const ret = []
   if (!n) n = 1
   while (ret.length < n) {
-    const tmp = Math.ceil(Math.random() * Math.pow(10, m))
+    const tmp = Math.ceil(Math.random() * Math.pow(10, m)).toString()
     if (ret.indexOf(tmp) === -1) {
       ret.push(tmp)
     }

@@ -12,7 +12,11 @@
   </body>
   <script>
     function createClient(token, type, onmessage){
-      var ws = new WebSocket('ws://localhost?'+type+'Token='+token)
+      var url = 'ws://'+location.host
+      if(type !== 'screen'){
+        url += '?'+type+'Token='+token
+      }
+      var ws = new WebSocket(url)
       ws.onopen = function() {
         console.log('@open')
       }
@@ -51,10 +55,14 @@
         console.log(data)
       }
       this.send = function(json){
+        if(this.type === 'team'){
+          json.data.teamToken = this.token
+        }
         try{
           this.ws.send(JSON.stringify(json))
         }catch(e){
           this.login(this.token)
+          this.ws.send(JSON.stringify(json))
         }
       }
     }
@@ -70,14 +78,14 @@
       this.nextQuestion = function(){
         this.send({action:'nextQuestion'})
       }
-      this.showAnswer = function(a){
-        this.send({action:'showAnswer', data:a})
-      }
-      this.endRace = function(){
-        this.send({action:'endRace'})
+      this.showAnswer = function(questionIndex){
+        this.send({action:'showAnswer', data:{questionIndex}})
       }
       this.changeScore = function(teamToken, teamScore){
         this.send({action:'changeScore', data:{teamToken, teamScore}})
+      }
+      this.endRace = function(){
+        this.send({action:'endRace'})
       }
       this.onmessage = function(data){
         console.log('this is judge onmessage')
@@ -86,13 +94,20 @@
     function Team(){
       Client.call(this, 'team')
       this.answer = function(answer, questionIndex){
-        this.send({action:'answer', data:{answer, questionIndex}})
+        this.send({ action:'answer', data:{answer, questionIndex}})
       }
       this.rename = function(newName){
-        this.send({action:'rename', data:newName})
+        this.send({ action:'rename', data:{newName}})
       }
       this.onmessage = function(data){
         console.log('this is team onmessage')
+      }
+    }
+    function Screen(){
+      Client.call(this, 'screen')
+      
+      this.onmessage = function(data){
+        console.log('this is screen onmessage')
       }
     }
   </script>
