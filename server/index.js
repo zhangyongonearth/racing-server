@@ -106,6 +106,15 @@ wss.on('connection', function(ws, req) {
     console.log(ws)
   })
   // 以防该客户端是在比赛开始的时候连接进来的
+  // 前端页面刷新后如何判断状态？需要
+  // screen页面：beginTime，raceName，raceMode，question，questionIndex，teams
+  // 不管enableAnswer是否为true，均能点击下一题或显示答案
+  // judge页面：questionIndex，enableAnswer，teams
+  // 如果questionIndex === 0 && enableAnswer === false  state为initRace，需要点击开始比赛，不能点击下一题或者显示答案
+  // else 均可以点击下一题或显示答案（index===0的时候，显示答案为空）
+  // team页面：activeTeam，enableAnswer， questionIndex，token
+
+  //
   ws.send(JSON.stringify({
     action: 'connect',
     data: {
