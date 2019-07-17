@@ -1,6 +1,12 @@
 /**
  * nodejs 本身支持commonJS规范，使用require和module.exports=
  */
+/**
+ * 修改config、serverData，clientState
+ * 在onmessage事件中直接send以上某个对象
+ * 在前端onmessage事件中，直接使用resp.data覆盖vue data的值
+ * endRace中，将所有答案记录保存进文件中
+ */
 const path = require('path')
 const { readQuestionLib, getRandom } = require('./utils')
 const config = {
