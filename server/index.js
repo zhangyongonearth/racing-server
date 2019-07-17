@@ -55,7 +55,6 @@ wss.on('connection', function(ws, req) {
         wss.broadcast({
           raceName: data.raceName,
           teamCount: data.teamCount,
-          beginTime: config.beginTime,
           raceMode: config.raceMode,
           enableAnswer: false
         }, action, 'screen')
@@ -88,6 +87,7 @@ wss.on('connection', function(ws, req) {
       case 'rename':
         resp = rename(data.teamToken, data.newName)
         wss.broadcast(resp, action, 'screen')
+        wss.broadcast(resp, action, 'judge')
         break
       case 'answer':
         resp = answer(data.teamToken, data.answer, data.questionIndex)
@@ -118,8 +118,12 @@ wss.on('connection', function(ws, req) {
   ws.send(JSON.stringify({
     action: 'connect',
     data: {
+      raceName: config.raceName,
+      raceMode: config.raceMode,
+      beginTime: config.beginTime,
       enableAnswer: state.enableAnswer,
       questionIndex: state.questionIndex,
+      question: state.question,
       updateTime: state.updateTime,
       activeTeam: state.activeTeam,
       teams: state.teams // 以防该主持人在比赛过程中刷新

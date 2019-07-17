@@ -19,7 +19,7 @@ function readQuestionLib(filePath) {
   const questionLibString = fs.readFileSync(filePath, 'utf-8')// .toString()
   questionLibString.split(/[\r\n]+[\r\n]+[\r\n]+/).map((oneQuestion) => {
     if (oneQuestion.trim() !== '') {
-      ret.push({ q: oneQuestion.substr(0, oneQuestion.length - 3).replace(/[\r\n]/g, '<br/>'), a: oneQuestion.substr(oneQuestion.length - 1) })
+      ret.push({ q: oneQuestion.substr(0, oneQuestion.length - 2).replace(/[\r\n]/g, '<br/>'), a: oneQuestion.substr(oneQuestion.length - 1) })
     }
   })
   console.log(ret)

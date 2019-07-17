@@ -88,7 +88,7 @@ function beginRace() {
 }
 function nextQuestion() {
   state.questionIndex++
-  const { q, a } = config.questionLib.pop()
+  const { q, a } = config.questionLib.shift()
   state.question = q
   state.answer = a
   state.score = 2
@@ -111,7 +111,7 @@ function changeScore(teamToken, newValue) {
   } else {
     console.error('changeScore team not exist')
   }
-  return { teams: state.teams }
+  return { teamToken, newValue }
 }
 // 结束竞赛
 function endRace() {
