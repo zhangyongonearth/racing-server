@@ -2,7 +2,7 @@
  * nodejs 本身支持commonJS规范，使用require和module.exports=
  */
 const path = require('path')
-const { readQuestionLib, getRandom, getUrlParam } = require('./utils')
+const { readQuestionLib, getRandom } = require('./utils')
 const config = {
   serverPort: '80',
   pagePath: path.resolve(__dirname, '../static/'),
@@ -74,7 +74,7 @@ function initRace(raceName, teamCount, raceMode) {
   config.raceName = raceName
   config.teamCount = teamCount
   config.raceMode = raceMode
-  config.teamTokens = require('./utils').getRandom(4, teamCount)
+  config.teamTokens = getRandom(4, teamCount)
   config.questionLib = readQuestionLib(config.questionLibPath)
   state.enableAnswer = false// 未开始
   // 断开所有clients

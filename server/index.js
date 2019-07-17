@@ -2,7 +2,7 @@ const express = require('express')
 const WebSocket = require('ws')
 const http = require('http')
 const app = express()
-const { login, logout, initRace, beginRace, endRace, changeScore, nextQuestion, showAnswer,
+const { login, initRace, beginRace, endRace, changeScore, nextQuestion, showAnswer,
   rename, answer, config, state } = require('./data')
 const { getUrlParam } = require('./utils')
 app.use('/', express.static(config.pagePath))
