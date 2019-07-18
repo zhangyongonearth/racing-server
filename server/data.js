@@ -12,6 +12,7 @@ const config = {
   // 以上三个变量，运行之前配置
   // 以下变量，在主持人界面登陆之后设置
   raceName: '践行社会主核心价值观你追我赶之知识竞赛',
+  holder: '', // 举办方
   teamCount: 5,
   teamTokens: ['1902', '1992', '2893', '8961'],
   beginTime: undefined,
@@ -70,8 +71,9 @@ function login(param) {
   return true
 }
 // 初始化竞赛
-function initRace(raceName, teamCount, raceMode) {
+function initRace(raceName, holder, teamCount, raceMode) {
   config.raceName = raceName
+  config.holder = holder
   config.teamCount = teamCount
   config.raceMode = raceMode
   config.teamTokens = getRandom(4, teamCount)

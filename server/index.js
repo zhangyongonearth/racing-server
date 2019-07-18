@@ -50,11 +50,12 @@ wss.on('connection', function(ws, req) {
     switch (action) {
       case 'initRace':
         console.log('initRace', data)
-        resp = initRace(data.raceName, data.teamCount, data.raceMode)
+        resp = initRace(data.raceName, data.holder, data.teamCount, data.raceMode)
         wss.broadcast({ teamTokens: config.teamTokens }, action, 'judge')
         wss.broadcast({
-          raceName: data.raceName,
-          teamCount: data.teamCount,
+          raceName: config.raceName,
+          holder: config.holder,
+          teamCount: config.teamCount,
           raceMode: config.raceMode,
           enableAnswer: false
         }, action, 'screen')
@@ -119,6 +120,7 @@ wss.on('connection', function(ws, req) {
     action: 'connect',
     data: {
       raceName: config.raceName,
+      holder: config.holder,
       raceMode: config.raceMode,
       beginTime: config.beginTime,
       enableAnswer: state.enableAnswer,
