@@ -116,20 +116,25 @@ wss.on('connection', function(ws, req) {
   // team页面：activeTeam，enableAnswer， questionIndex，token
 
   //
+  const data = {
+    raceName: config.raceName,
+    holder: config.holder,
+    raceMode: config.raceMode,
+    beginTime: config.beginTime,
+    endTime: config.endTime,
+    enableAnswer: state.enableAnswer,
+    questionIndex: state.questionIndex,
+    question: state.question,
+    updateTime: state.updateTime,
+    activeTeam: state.activeTeam,
+    teams: state.teams // 以防该主持人在比赛过程中刷新
+  }
+  if (ws.clientType === 'judge') {
+    data.teamTokens = config.teamTokens
+  }
   ws.send(JSON.stringify({
     action: 'connect',
-    data: {
-      raceName: config.raceName,
-      holder: config.holder,
-      raceMode: config.raceMode,
-      beginTime: config.beginTime,
-      enableAnswer: state.enableAnswer,
-      questionIndex: state.questionIndex,
-      question: state.question,
-      updateTime: state.updateTime,
-      activeTeam: state.activeTeam,
-      teams: state.teams // 以防该主持人在比赛过程中刷新
-    }
+    data: data
   }))
 })
 wss.on('error', function(ws, err) {

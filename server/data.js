@@ -17,11 +17,12 @@ const config = {
   judgeToken: '011605',
   // 以上三个变量，运行之前配置
   // 以下变量，在主持人界面登陆之后设置
-  raceName: '践行社会主核心价值观你追我赶之知识竞赛',
+  raceName: '',
   holder: '', // 举办方
   teamCount: 5,
-  teamTokens: ['1902', '1992', '2893', '8961'],
+  teamTokens: [],
   beginTime: undefined,
+  endTime: undefined,
   raceMode: 0 // 竞赛模式：0抢答，1
 }
 const state = {
@@ -84,8 +85,12 @@ function initRace(raceName, holder, teamCount, raceMode) {
   config.raceMode = raceMode
   config.teamTokens = getRandom(4, teamCount)
   config.questionLib = readQuestionLib(config.questionLibPath)
+  state.answers = [] // 每道题的回答情况，每次请求题目后push{}
+  state.teams = {}
+  state.questionIndex = 0
   state.enableAnswer = false// 未开始
   // 断开所有clients
+  console.log(config.teamTokens)
   return { enableAnswer: false }
 }
 function beginRace() {
@@ -124,8 +129,10 @@ function changeScore(teamToken, newValue) {
 // 结束竞赛
 function endRace() {
   state.enableAnswer = false
+  config.teamTokens = []
+  config.endTime = Date.now()
   console.log(state.teams)
-  return { enableAnswer: false, closed: true }
+  return { enableAnswer: false, endTime: config.endTime }
 }
 // 修改名称
 function rename(token, name) {
@@ -165,6 +172,10 @@ function answer(teamToken, answer, questionIndex) {
     if (config.raceMode === 1) { // 如果是抢答模式
       state.enableAnswer = false
     }
+  }
+  if (questionIndex === 0) {
+    // 切题之前的测试
+    return { teamToken, activeTeam: teamToken, enableAnswer: true, answer }
   }
   if (!(teamToken in state.answers[questionIndex])) {
     console.log('new answer -- questionIndex:' + state.questionIndex +
