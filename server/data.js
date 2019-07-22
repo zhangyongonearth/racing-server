@@ -100,6 +100,15 @@ function beginRace() {
   return { enableAnswer: true, beginTime: config.beginTime, questionIndex: 0 }
 }
 function nextQuestion() {
+  if (config.questionLib.length === 0) {
+    return {
+      questionIndex: state.questionIndex,
+      question: '题目已经做完了',
+      score: state.score,
+      updateTime: state.updateTime,
+      enableAnswer: false
+    }
+  }
   state.questionIndex++
   const { q, a } = config.questionLib.shift()
   state.question = q
