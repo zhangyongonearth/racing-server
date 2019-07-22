@@ -11,7 +11,7 @@ const path = require('path')
 const { readQuestionLib, getRandom } = require('./utils')
 const config = {
   serverPort: '80',
-  pagePath: path.resolve(__dirname, '../static/'),
+  pagePath: path.resolve(__dirname, '../../racing-client/dist/'),
   questionLibPath: path.resolve(__dirname, './questionLib.txt'),
   questionLib: [],
   judgeToken: '011605',
