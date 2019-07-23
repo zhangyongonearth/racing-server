@@ -17,12 +17,20 @@ function readQuestionLib(filePath) {
   const ret = []
   const fs = require('fs')
   const questionLibString = fs.readFileSync(filePath, 'utf-8')// .toString()
-  questionLibString.split(/[\r\n]+[\r\n]+[\r\n]+/).map((oneQuestion) => {
-    if (oneQuestion.trim() !== '') {
-      ret.push({ q: oneQuestion.substr(0, oneQuestion.length - 2).replace(/[\r\n]/g, '<br/>'), a: oneQuestion.substr(oneQuestion.length - 1) })
+  questionLibString.split(/[\r\n]+[\r\n]+[\r\n]/).map((oneQuestion) => {
+    oneQuestion = oneQuestion.trim()
+    if (oneQuestion.trim() !== '') { // trim()只删除首尾的空白，回车也删除，但是需要获取返回值
+      const _arr = oneQuestion.split(/[\n\r]/)
+      ret.push({
+        // q: oneQuestion.substr(0, oneQuestion.length - 2).replace(/[\r\n]/g, '<br/>'),
+        // a: oneQuestion.substr(oneQuestion.length - 1)
+        a: _arr.pop(),
+        q: _arr.join('<br />')
+      })
+    } else {
+      console.log('empty row')
     }
   })
-  console.log(ret)
   return ret
 }
 
